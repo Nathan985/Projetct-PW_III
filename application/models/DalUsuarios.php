@@ -6,11 +6,12 @@ class DalUsuarios extends CI_Model
 
     public function LogarUser($nome, $senha)
     {
+        
+        $where = "(nickname = '$nome' OR email = '$nome') AND senha = '$senha'";
+        $this->db->where($where);
+        $result = $this->db->get("tbl_User")->row_array();
+        return $result;
 
-        $this->db->where("nickname" or "email", $nome);
-        $this->db->where("senha", $senha);
-        $linha = $this->db->get("tbl_User")->row_array();
-        return $linha;
     }
 
     public function CadastrarUsuario($data)
@@ -19,5 +20,10 @@ class DalUsuarios extends CI_Model
         return $this->db->insert('tbl_User', $data);
 
     }
+
+    public function ValidarCampo($campo, $value){
+        $this->db->where($campo, $value);
+        $result = $this->db->get("tbl_User")->row_array();
+        return $result;
+    }
 }
-?>

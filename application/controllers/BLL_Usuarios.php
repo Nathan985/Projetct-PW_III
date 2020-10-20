@@ -11,17 +11,57 @@ class BLL_Usuarios extends CI_Controller
         $this->load->view('Activity_Login');
     }
 
+    public function TelaHome()
+    {
+        $this->load->view('Home');
+    }
+
     public function ValidarLogin()
     {
 
         $nome = $this->input->post("Iden");
-        $senha = $this->input->post("Pass");
+        $senha = $this->Hash($this->input->post("Pass"));
 
         $result = $this->ValidarCredenciaisLogin($nome, $senha);
 
         if ($result) {
-            /*BANCO DE DADOS*/
-        }
+            $this->load->model('DalUsuarios');
+            $linha = $this->DalUsuarios->LogarUser($nome, $senha);
+            if (!empty($linha)) {
+                if ($linha['ativo']) {
+                    switch ($linha['cargo']) {
+                        case "Cliente":
+                            echo "SucessoCliente!";
+                            $this->Session($linha);
+                            break;
+                        case "Adm":
+                            echo "SucessoADM!";
+                            break;
+                        case "Funcionario":
+                            echo "Sucesso!Func";
+                            break;
+                        default:
+                            echo "Erro Usuario!";
+                            break;
+                    }
+                } else {
+                    echo "NãoAtivo";
+                    die();
+                }
+            } else {
+                echo "FalhaLogin!";
+                die();
+            }
+       }
+    }
+
+    function Session($dados){
+
+        $this->session->nome = $dados['nome'];
+        $this->session->email = $dados['email'];
+        $this->session->nickname = $dados['nickname'];
+        $this->session->foto = $dados['foto'];
+
     }
 
 
@@ -42,6 +82,7 @@ class BLL_Usuarios extends CI_Controller
     public function ValidarCadastro()
     {
         $dados = [
+            'idUser' => md5(date("d/m/Y h:i:s")),
             'nome' => $this->input->post("User"),
             'email' => $this->input->post("E-mail"),
             'senha' => $this->input->post("senhacad"),
@@ -56,16 +97,9 @@ class BLL_Usuarios extends CI_Controller
 
 
         if ($result) {
-            try {
-                if ($this->DalUsuarios->CadastrarUsuario($dados)) {
-                    echo "ClienteCadastrado";
-                    die();
-                } else {
-                    echo "FalhaCadastrado";
-                    die();
-                }
-            } catch (\Exception $ex) {
-                echo "FalhaCadastrado";
+            $dados['senha'] = $this->Hash($dados['senha']);
+            if ($this->DalUsuarios->CadastrarUsuario($dados)) {
+                echo "ClienteCadastrado";
                 die();
             }
         }
@@ -73,13 +107,18 @@ class BLL_Usuarios extends CI_Controller
 
     private function ValidarCredenciaisCadastro($dados, $cfsenha)
     {
-
+        $this->load->model('DalUsuarios');
         if (empty($dados['nome'])) {
             echo "ErroNome";
             die();
         }
         if (empty($dados['email'])) {
             echo "ErroEmail";
+            die();
+        }
+        $bool = $this->DalUsuarios->ValidarCampo("email", $dados['email']);
+        if ($bool) {
+            echo "ErroEmailCadastrado";
             die();
         }
         if (empty($dados['senha'])) {
@@ -98,8 +137,18 @@ class BLL_Usuarios extends CI_Controller
             echo "ErroNick";
             die();
         }
+        $bool = $this->DalUsuarios->ValidarCampo("nickname", $dados['nickname']);
+        if ($bool) {
+            echo "ErroNickCadastrado";
+            die();
+        }
         if (empty($dados['cpf']) or strlen($dados['cpf']) != 11) {
             echo "ErroCPf";
+            die();
+        }
+        $bool = $this->DalUsuarios->ValidarCampo("cpf", $dados['cpf']);
+        if ($bool) {
+            echo "ErroCpfCadastrado";
             die();
         }
         if (empty($dados['telefone'])) {
@@ -107,5 +156,13 @@ class BLL_Usuarios extends CI_Controller
             die();
         }
         return true;
+    }
+
+    private function Hash($senha){
+
+        $result = md5($senha);
+
+        return $result;
+
     }
 }

@@ -87,35 +87,97 @@ $(function () {
                     var exibirErro = document.getElementById("passErro");
                     exibirErro.className = "d-none alert";
                 }
+                if(data == "Erro Usuario!"){
+
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'center-end',
+                        background: '#fff',
+                        showConfirmButton: false,
+                        width: '420px',
+                        padding: '1.2rem',
+                        timer: 3000,
+                        timerProgressBar: true,
+                        onOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+                    Toast.fire({
+                        customClass: {
+                            content: 'CustomColor',
+                            title: 'CustomText',
+                            popup: 'CustomColor',
+                            footer: 'CustomText'
+                        },
+                        icon: 'error',
+                        title: 'Cargo não é Valido!',
+                    })
+
+                }
 
 
-
-                // if (data == "FalhaLogin") {
-                //     var titulo = document.getElementById("verLogin");
-                //     titulo.className = "alert";
-                // }
-                // else {
-                //     var titulo = document.getElementById("verLogin");
-                //     titulo.className = "d-none alert";
-                // }
-                // if (data == "NãoAtivo") {
-                //     Swal.fire({
-                //         customClass: {
-                //             popup: 'alertCustom',
-                //             confirmButton: 'btnColor',
-                //             title: 'CustomColor',
-                //             content: 'CustomColor'
-                //         },
-                //         icon: 'error',
-                //         titleText: 'Inativo!',
-                //         text: 'Você esta Inativo!',
-                //         buttonsStyling: false
-
-                //     });
-                // }
-                // if (data == "SucessoCliente") {
-                //     window.location.href = "../"
-                // }
+                if (data == "FalhaLogin!") {
+                    var titulo = document.getElementById("verLogin");
+                    titulo.className = "alert";
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'center-end',
+                        background: '#fff',
+                        showConfirmButton: false,
+                        width: '420px',
+                        padding: '1.2rem',
+                        timer: 3000,
+                        timerProgressBar: true,
+                        onOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+                    Toast.fire({
+                        customClass: {
+                            content: 'CustomColor',
+                            title: 'CustomText',
+                            popup: 'CustomColor',
+                            footer: 'CustomText'
+                        },
+                        icon: 'error',
+                        title: 'Usuario não encontrado!',
+                    })
+                }
+                else {
+                    var titulo = document.getElementById("verLogin");
+                    titulo.className = "d-none alert";
+                }
+                if (data == "NãoAtivo") {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'center-end',
+                        background: '#fff',
+                        showConfirmButton: false,
+                        width: '420px',
+                        padding: '1.2rem',
+                        timer: 3000,
+                        timerProgressBar: true,
+                        onOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+                    Toast.fire({
+                        customClass: {
+                            content: 'CustomColor',
+                            title: 'CustomText',
+                            popup: 'CustomColor',
+                            footer: 'CustomText'
+                        },
+                        icon: 'error',
+                        title: 'Usuario Desativado!',
+                    })
+                }
+                if (data == "SucessoCliente!") {
+                    window.location.replace("TelaHome")
+                }
                 // if (data == "ReloadIMG") {
                 //     window.location.href = "../"
                 // }
@@ -474,6 +536,8 @@ $(function () {
                     titulo.className = "alert d-none";
                 }
                 if (data == "ErroCPf") {
+                    var titulo = document.getElementById("CadCpfCadastrado");
+                    titulo.className = "alert d-none";
                     var titulo = document.getElementById("cadCPF");
                     titulo.className = "input-field invalid";
                     var titulo = document.getElementById("CadCpfmsg");
@@ -541,7 +605,7 @@ $(function () {
                         title: 'CPF já Cadastrado!',
                     })
                 }
-                else if(data != "ErroCPf") {
+                else if(data != "ErroCPf"){
                     var titulo = document.getElementById("cadCPF");
                     titulo.className = "input-field";
                     var titulo = document.getElementById("CadCpfCadastrado");
